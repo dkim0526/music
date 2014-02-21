@@ -169,20 +169,6 @@ public class TutorialMSActivity extends SherlockActivity {
 		}
 	}
 
-	private void setUpAnimation() {
-		anim1 = AnimationUtils.loadAnimation(this, R.animator.falling);
-		anim1.setFillAfter(false);
-		anim2 = AnimationUtils.loadAnimation(this, R.animator.falling);
-		anim2.setFillAfter(false);
-		anim3 = AnimationUtils.loadAnimation(this, R.animator.falling);
-		anim3.setFillAfter(false);
-		anim4 = AnimationUtils.loadAnimation(this, R.animator.falling);
-		anim4.setFillAfter(false);
-		anim5 = AnimationUtils.loadAnimation(this, R.animator.falling);
-		anim5.setFillAfter(false);
-
-	}
-
 	private void setUpSound() {
 		// Log.e("SP", "FAILED ON ONCREATE");
 		AssetManager am = getAssets();
@@ -192,7 +178,6 @@ public class TutorialMSActivity extends SherlockActivity {
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		sp = new SPPlayer(am, audioManager);
 	}
-
 
 	public static int getCallBack() {
 		return callBack;
@@ -1008,7 +993,7 @@ public class TutorialMSActivity extends SherlockActivity {
 				piano.toggleShade();
 			}
 		}
-//		unlockAll();
+		// unlockAll();
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -1108,7 +1093,8 @@ public class TutorialMSActivity extends SherlockActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if(!unlock) return false;
+		if (!unlock)
+			return false;
 		switch (item.getItemId()) {
 
 		case 16908332:
@@ -1131,7 +1117,7 @@ public class TutorialMSActivity extends SherlockActivity {
 			Log.i("asdf", "nextTut");
 
 			onClickHandler(1);
-//			lockOthers(1);
+			// lockOthers(1);
 			break;
 			// numClicks++;
 		}
@@ -1139,7 +1125,7 @@ public class TutorialMSActivity extends SherlockActivity {
 		case R.id.replay_icon: {
 			Log.i("asdf", "backTut");
 			onClickHandler(2);
-//			lockOthers(2);
+			// lockOthers(2);
 
 			break;
 			// numClicks--;
@@ -1148,10 +1134,15 @@ public class TutorialMSActivity extends SherlockActivity {
 			Log.i("asdf", "restartTut");
 			// initSongs();
 			onClickHandler(3);
-//			lockOthers(3);
+			// lockOthers(3);
 
 			break;
 			// numClicks = 0;
+		}
+		case R.id.menu_settings: {
+			Intent i = new Intent(this, SettingsActivity.class);
+			startActivity(i);
+			break;
 		}
 
 		default: {
@@ -1202,7 +1193,7 @@ public class TutorialMSActivity extends SherlockActivity {
 			Log.e("noteFallTask", "BackExecute");
 			try {
 				setUpSound();
-				setUpAnimation();
+				// setUpAnimation();
 
 				return true;
 			} catch (Exception ex) {

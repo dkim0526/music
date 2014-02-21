@@ -30,8 +30,6 @@
         </activity>
         <activity android:name="com.midisheetmusic.FileBrowserActivity" >
         </activity>
-        <activity android:name="com.midisheetmusic.SettingsActivity" >
-        </activity>
         <activity android:name="com.midisheetmusic.HelpActivity" >
         </activity>
         <activity
@@ -73,9 +71,13 @@
         </activity>
         <activity
             android:name="com.midisheetmusic.SoonToBe"
-            android:label="@string/title_activity_soon_to_be"
             android:configChanges="orientation"
-            android:screenOrientation="landscape">
+            android:label="@string/title_activity_soon_to_be"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 
