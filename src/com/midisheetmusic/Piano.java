@@ -126,6 +126,13 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void addToRec(RecNotes rn) {
+		if(myRec == null) {
+			System.err.println("myrec null");
+			return;
+		} else if (rn == null ) {
+			System.err.println("rn null");
+			return;
+		}
 		this.myRec.add(rn);
 	}
 
@@ -1509,6 +1516,10 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 			startTime = Calendar.getInstance();
 		}
 	}
+	
+	public boolean getRecStart() {
+		return recStart;
+	}
 
 	public Calendar getStartTime() {
 		return startTime;
@@ -1658,8 +1669,8 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 	}
 
-	public static String[] beatArrss = { "beat1", "beat2", "beat3", "clap",
-			"snare" };
+	public static String[] beatArrss = { "beat1", "beat2", "beat3", "beat4", "beat5", "beat6",
+											"clap","snare", "oneshot3", "oneshot4", "oneshot5", "oneshot6" };
 
 	public void playBeat(int i) {
 		soundPool.playNote(beatArrss[i], 1);

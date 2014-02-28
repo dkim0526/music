@@ -78,14 +78,22 @@
     <string name="beat4">Beat4</string>
     <string name="record_icon">Record</string>
     <string name="menu">Menu</string>
-    <string name="beats">Beats...show 0</string>
-    <string name="save">Save....show1</string>
-    <string name="list">List...show2</string>
+    <string name = "mode_save">Mode: Save</string>
+        <string name = "mode_play">Mode: Play</string>
+    
+    <string name="beats">Go to Beats</string>
+    <string name="save">Save Recording</string>
+    <string name="list">List Recordings</string>
     <string name="settings">Settings...show3</string>
-    <string name="Spare">spare...show4</string>
+    <string name="replay">Replay Recordings</string>
     <string name="title_activity_soon_to_be">SoonToBe</string>
     <string name="rename">Rename</string>
-    <string name="trash_icon">Trash</string>
+
     <string name="title_activity_settings">SettingsActivity</string>
+    <string name="trash_icon">Delete</string>
+    <string name="savedbeats">Saved Beats</string>
+    <string name="none">No Saved Beats</string>
+    
+    
 
 </resources>

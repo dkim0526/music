@@ -1,51 +1,52 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-   
- <item
-        android:id="@+id/piano_icon" 
+    <item
+        android:id="@+id/piano_icon"
+        android:icon="@drawable/piano_icon"
         android:orderInCategory="1"
         android:showAsAction="always"
-        android:icon="@drawable/piano_icon"
         android:title="@string/piano_icon"/>
-  
-     
- <item
-        android:id="@+id/loop_icon" 
-        android:orderInCategory="2"
-        android:showAsAction="always"
-        android:visible="true"
+    <item
+        android:id="@+id/loop_icon"
         android:icon="@drawable/loop_icon"
+        android:menuCategory="container"
+        android:orderInCategory="15"
+        android:showAsAction="always"
         android:title="@string/loop_icon"
-        android:menuCategory="container" >
-
+        android:visible="true">
         <menu>
-            <item 
-            android:id="@+id/Loop1" 
-            android:orderInCategory="3"
-            android:title="@string/Loop1"
-            android:showAsAction="ifRoom|withText">
-    </item>
-            <item 
-            android:id="@+id/Loop2" 
-            android:orderInCategory="4"
-            android:title="@string/Loop2"
-            android:showAsAction="ifRoom|withText">
-    </item>
-           <item 
-            android:id="@+id/Loop3" 
-            android:orderInCategory="5"
-            android:title="@string/Loop3"
-            android:showAsAction="ifRoom|withText">
-    </item> 
-     
+            <item
+                android:id="@+id/Loop1"
+                android:orderInCategory="3"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/Loop1">
+            </item>
+            <item
+                android:id="@+id/Loop2"
+                android:orderInCategory="4"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/Loop2">
+            </item>
+            <item
+                android:id="@+id/Loop3"
+                android:orderInCategory="5"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/Loop3">
+            </item>
         </menu>
     </item>
-  <item
-        android:id="@+id/toggle" 
+    <item
+        android:id="@+id/menu_sub"
+        android:orderInCategory="7"
+        android:showAsAction="always|withText"
+        android:title="@string/mode_save">
+    </item>
+    <item
+        android:id="@+id/toggle"
         android:orderInCategory="6"
         android:showAsAction="always|withText"
-        android:title="@string/toggleShots" /> 
-          <item
+        android:title="@string/toggleShots"/>
+    <item
         android:id="@+id/list_rec"
         android:checkable="false"
         android:orderInCategory="200"
@@ -55,7 +56,5 @@
         android:checkable="false"
         android:orderInCategory="300"
         android:title="Save Recording"/>
- 
+
 </menu>
-
-
