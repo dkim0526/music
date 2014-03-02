@@ -140,6 +140,7 @@ public class TutorialMSActivity extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		unlock = true;
 		popUpCount = 0;
 		ivArray = new ImageView[2];
 
@@ -218,9 +219,7 @@ public class TutorialMSActivity extends SherlockActivity {
 				LinearLayout.LayoutParams.WRAP_CONTENT, 1);
 		LinearLayout rl = new LinearLayout(this);
 		rl.setOrientation(LinearLayout.HORIZONTAL);
-		// layoutParams3.leftMargin = 100;
-		// layoutParams3.topMargin = 100;
-		// layoutParams3.setMargins(10, 10, 10, 10);
+
 		/*
 		 * For the button to start that tutorial
 		 */
@@ -248,11 +247,6 @@ public class TutorialMSActivity extends SherlockActivity {
 		restartTut = new Button(this);
 		restartTut.setText("Restart!");
 		restartTut.setLayoutParams(layoutParams5);
-
-		// rl.addView(playNote);
-		// rl.addView(nextTut);
-		// rl.addView(backTut);
-		// rl.addView(restartTut);
 
 		layout.addView(rl, layoutParams);
 
@@ -668,10 +662,12 @@ public class TutorialMSActivity extends SherlockActivity {
 	protected void onClickHandler(int button) {
 		// TODO Auto-generated method stub
 		unlock = false;
-		System.err.println("within onclickhandler: " + button);
+		System.err.println("within onclickhandler: " + button + " tutlevel: "
+				+ tutLevel);
+
 		if (button == 0) {
 			Log.i("asdf", "playnote");
-			initSongs();
+			// initSongs();
 			// No increment
 		} else if (button == 1) {
 			Log.i("asdf", "nextTut");
@@ -679,12 +675,14 @@ public class TutorialMSActivity extends SherlockActivity {
 			numClicks++;
 		} else if (button == 2) {
 			Log.i("asdf", "backTut");
-			initSongs();
+			// initSongs();
+
 			numClicks--;
+			if (numClicks < 0)
+				numClicks = 0;
 		} else if (button == 3) {
 			Log.i("asdf", "restartTut");
-			initSongs();
-			// initnotes
+			// initSongs();
 			numClicks = 0;
 		} else {
 			Log.e("OOB", "button out of bounds");
@@ -693,6 +691,7 @@ public class TutorialMSActivity extends SherlockActivity {
 
 		// Level 1 - C Major Scale
 		if (tutLevel == 1) {
+			System.out.println("num clicks: " + numClicks);
 			switch (numClicks) {
 			case 0:
 				piano.playSong(cmajor1, 150);
@@ -700,11 +699,10 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(cmajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
+
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -717,11 +715,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(dmajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -734,11 +730,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(gmajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -751,11 +745,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(amajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -768,11 +760,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(emajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -785,11 +775,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(fsharp_major2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -802,11 +790,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(dflat2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -819,11 +805,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(aflat2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -836,11 +820,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(eflat2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -853,11 +835,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(bflat2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -870,11 +850,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(fmajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -887,11 +865,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 1:
 				piano.playSong(bmajor2, 150);
 				break;
-			case 2:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -913,11 +889,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 4:
 				piano.playSong(twinkle4, 150);
 				break;
-			case 5:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -933,11 +907,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 2:
 				piano.playSong(littlelamb3, 125);
 				break;
-			case 3:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -959,11 +931,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 4:
 				piano.playSong(biebs5, 130);
 				break;
-			case 5:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 
@@ -986,11 +956,9 @@ public class TutorialMSActivity extends SherlockActivity {
 			case 4:
 				piano.playSong(thriftshop5, thriftspeed);
 				break;
-			case 5:
-				numClicks = 0;
-				break;
 			default:
 				piano.toggleShade();
+				numClicks = 0;
 			}
 		}
 		// unlockAll();
@@ -1093,8 +1061,11 @@ public class TutorialMSActivity extends SherlockActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (!unlock)
+		if (!unlock) {
+			System.err.println("still locked");
 			return false;
+		}
+
 		switch (item.getItemId()) {
 
 		case 16908332:
@@ -1122,7 +1093,7 @@ public class TutorialMSActivity extends SherlockActivity {
 			// numClicks++;
 		}
 
-		case R.id.replay_icon: {
+		case R.id.previous_icon: {
 			Log.i("asdf", "backTut");
 			onClickHandler(2);
 			// lockOthers(2);
@@ -1130,7 +1101,7 @@ public class TutorialMSActivity extends SherlockActivity {
 			break;
 			// numClicks--;
 		}
-		case R.id.previous_icon: {
+		case R.id.replay_icon: {
 			Log.i("asdf", "restartTut");
 			// initSongs();
 			onClickHandler(3);
@@ -1140,8 +1111,8 @@ public class TutorialMSActivity extends SherlockActivity {
 			// numClicks = 0;
 		}
 		case R.id.menu_settings: {
-			Intent i = new Intent(this, SettingsActivity.class);
-			startActivity(i);
+			// Intent i = new Intent(this, SettingsActivity.class);
+			// startActivity(i);
 			break;
 		}
 
