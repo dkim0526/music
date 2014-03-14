@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.midisheetmusic.R;
+import com.tncmusicstudio.R;
 
 public class MySimpleArrayAdapter extends ArrayAdapter<String> {
 	private final Context context;

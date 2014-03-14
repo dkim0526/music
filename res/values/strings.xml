@@ -2,7 +2,7 @@
 <resources>
 
     <string name="Welcome_Text">Welcome to Music Learner</string>
-    <string name="app_name">MidiSheetMusic</string>
+    <string name="app_name">TnC Music Studio</string>
     <string name="choose_song">Choose Song</string>
     <string name="Compose_Choice">Compose</string>
     <string name="Tutorials">Tutorials</string>

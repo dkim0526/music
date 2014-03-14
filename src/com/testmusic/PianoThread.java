@@ -6,7 +6,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-import com.midisheetmusic.TutorialMSActivity;
+import com.tncmusicstudio.TutorialMSActivity;
 
 public class PianoThread extends Thread {
 	private static final String TAG = PianoThread.class.getSimpleName();
