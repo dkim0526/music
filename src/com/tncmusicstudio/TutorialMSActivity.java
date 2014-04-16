@@ -47,7 +47,7 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.tncmusicstudio.R;
 import com.model.NotePlay;
-//TUTORIALS!!!!!
+
 public class TutorialMSActivity extends SherlockActivity {
 	String[] values = new String[] { "Level 0: Keyboard Note Training! ",
 			"Level 1: Major Scales", "Level 2: Learning Chords",
