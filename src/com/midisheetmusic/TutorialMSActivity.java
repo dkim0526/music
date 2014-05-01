@@ -19,23 +19,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
-//import android.view.Menu;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem.OnMenuItemClickListener;
-
-import android.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.Transformation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,12 +31,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
+//import android.view.Menu;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.model.NotePlay;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.Animator.AnimatorListener;
-import com.nineoldandroids.animation.AnimatorSet;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
+import com.tncmusicstudio.AndroidDashboardDesignActivity;
+import com.tncmusicstudio.LevelActivity;
+import com.tncmusicstudio.R;
+import com.tncmusicstudio.SPPlayer;
 
 public class TutorialMSActivity extends SherlockActivity {
 	String[] values = new String[] { "Level 0: Keyboard Note Training! ",
@@ -87,20 +75,7 @@ public class TutorialMSActivity extends SherlockActivity {
 	ImageView[] ivArray;
 	/* layouts initialized */
 
-	/* init thread */
-	// PianoThread pthread;
-	/* animation stuff */
-	Animation animC1;
-	Animation animC2;
-	Animation animD1;
-	Animation animD2;
-	Animation animE1;
-	Animation animE2;
-	Animation animF1;
-	Animation animF2;
-	Animation anim1;
-	Animation anim2, anim3, anim4, anim5, anim6, anim7;
-	Animator animation1, animation2;
+
 	int i = 0;// random
 	int c1Count = 0;
 	int d1Count = 0;
@@ -123,7 +98,6 @@ public class TutorialMSActivity extends SherlockActivity {
 	static int callBack = 0;
 
 	RelativeLayout rl;
-	AnimatorSet set1, set2, set3, set4;
 
 	private pianoAsync setPiano;
 	ProgressDialog dialog;

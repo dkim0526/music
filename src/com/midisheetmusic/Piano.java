@@ -25,6 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.SurfaceHolder;
@@ -33,6 +34,8 @@ import android.widget.Toast;
 
 import com.model.NotePlay;
 import com.model.RecNotes;
+import com.tncmusicstudio.MidiOptions;
+import com.tncmusicstudio.SPPlayer;
 
 /**
  * @class Piano
@@ -866,9 +869,10 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 			}
 			// ShadeOneNote(bufferCanvas, noteToShade, Color.LTGRAY);
 			toPlaySound = noteToShadetoPlayConverter(noteToShade, true);
-			
+
 			if (i != 0)
-				lastTime += (500 * (double) (speed/150.0)) * songArr[i - 1].getDuration();
+				lastTime += (500 * (double) (speed / 150.0))
+						* songArr[i - 1].getDuration();
 			else
 				lastTime += 500;
 			myRec.add(new RecNotes(lastTime, toPlaySound, noteToShade));
@@ -1060,6 +1064,14 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		return key;
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		System.out.println("KEY DOWN NOWWW");
+
+		return pianoType;
+
+	}
+
 	/** When the Piano is touched */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
@@ -1239,6 +1251,8 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	 * @return -1 if return none and note if return something
 	 */
 	private int ShadeRandom(float x, float y, boolean moved) {
+		Calendar calendar = Calendar.getInstance();
+		long stime = calendar.getTimeInMillis();
 		String noteToPlay = "";
 		int color = gray1;
 		int halfwayPoint = (WhiteKeyWidth * 6 + (margin_val[0] + WhiteKeyWidth + BlackBorder));
@@ -1265,6 +1279,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		// }
 		// ShadeOneNote(bufferCanvas, lastShaded, color);
 		// }
+		System.out.println("SHADERANDOM: (x,y) (" + x + " , " + y + ") "
+				+ " margin: " + margin + " blackborder: " + BlackBorder);
+
 		if (x < halfwayPoint) {
 			// if it's in C4
 			if (x < (margin_val[0] + WhiteKeyWidth + BlackBorder)) {
@@ -1435,9 +1452,11 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
 		}
+		long ftime1 = calendar.getTimeInMillis();
 
 		ShadeOneNote(bufferCanvas, lastShaded, shade1);
 
+		long ftime2 = calendar.getTimeInMillis();
 		// Log.e("coord", " THE COORD I WANT IS : " + (WhiteKeyWidth * 6 +
 		// (margin_val[0] + WhiteKeyWidth + BlackBorder)));
 		bufferCanvas
@@ -1507,8 +1526,16 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 							key, lastShaded));
 				}
 			}
+			long ftime3 = calendar.getTimeInMillis();
 
 			soundPool.playNote(key, 1);
+			long ftime4 = calendar.getTimeInMillis();
+			System.out.println("after trying to shade with if: "
+					+ (ftime1 - stime) + " after shadeonenote: "
+					+ (ftime2 - ftime1)
+					+ " after figuring out what note to play and record: "
+					+ (ftime3 - ftime2) + " after playing note: "
+					+ (ftime4 - ftime3));
 			return lastShaded;
 		}
 
