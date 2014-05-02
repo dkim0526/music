@@ -31,14 +31,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
-//import android.view.Menu;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.model.NotePlay;
 import com.tncmusicstudio.AndroidDashboardDesignActivity;
 import com.tncmusicstudio.LevelActivity;
+import com.tncmusicstudio.Piano;
 import com.tncmusicstudio.R;
 import com.tncmusicstudio.SPPlayer;
+//import android.view.Menu;
 
 public class TutorialMSActivity extends SherlockActivity {
 	String[] values = new String[] { "Level 0: Keyboard Note Training! ",
@@ -74,7 +75,6 @@ public class TutorialMSActivity extends SherlockActivity {
 			noteC2A, noteC2B;
 	ImageView[] ivArray;
 	/* layouts initialized */
-
 
 	int i = 0;// random
 	int c1Count = 0;

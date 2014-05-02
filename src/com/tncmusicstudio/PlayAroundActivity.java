@@ -23,12 +23,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -46,10 +46,10 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.tncmusicstudio.R;
 import com.model.NotePlay;
 import com.model.RecManager;
 import com.model.RecNotes;
+import com.model.TupleStringInt;
 
 public class PlayAroundActivity extends SherlockActivity {
 	String[] values = new String[] { "Level 0: Keyboard Note Training! ",
@@ -142,6 +142,7 @@ public class PlayAroundActivity extends SherlockActivity {
 	SharedPreferences settings;
 	SharedPreferences.Editor edit;
 	String myset;
+	private HashMap<Integer, TupleStringInt> note2Key;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +161,7 @@ public class PlayAroundActivity extends SherlockActivity {
 		/* then it's been set up, otherwise set it up */
 		myset = settings.getString(Beats_Activity.beat_key,
 				Beats_Activity.DEFAULT_STRING_ARRAY);
+		setUpHash();
 		if (myset.length() != 12) {
 			myset = Beats_Activity.DEFAULT_STRING_ARRAY;
 			edit.putString(Beats_Activity.beat_key,
@@ -416,6 +418,7 @@ public class PlayAroundActivity extends SherlockActivity {
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		piano = new Piano(this, marginVal, sp, true);
+
 		/*** SET BUTTON WIDTH AND HEIGHT FROM PIANO KEY WIDTH AND HEIGHTS **/
 		// noteOr.setMinimumWidth(piano.getKeyWidths("white")); //change to
 		// public static later
@@ -692,6 +695,81 @@ public class PlayAroundActivity extends SherlockActivity {
 			}
 		}
 		return -1;
+	}
+
+	private void setUpHash() {
+		note2Key = new HashMap<Integer, TupleStringInt>();
+		// white keys
+		note2Key.put(KeyEvent.KEYCODE_TAB, new TupleStringInt(Piano.white[0],
+				SPPlayer.keyc3));
+		note2Key.put(KeyEvent.KEYCODE_Q, new TupleStringInt(Piano.white[1],
+				SPPlayer.keyd3));
+		note2Key.put(KeyEvent.KEYCODE_W, new TupleStringInt(Piano.white[2],
+				SPPlayer.keye3));
+		note2Key.put(KeyEvent.KEYCODE_E, new TupleStringInt(Piano.white[3],
+				SPPlayer.keyf3));
+		note2Key.put(KeyEvent.KEYCODE_R, new TupleStringInt(Piano.white[4],
+				SPPlayer.keyg3));
+		note2Key.put(KeyEvent.KEYCODE_T, new TupleStringInt(Piano.white[5],
+				SPPlayer.keya3));
+		note2Key.put(KeyEvent.KEYCODE_Y, new TupleStringInt(Piano.white[6],
+				SPPlayer.keyb3));
+		note2Key.put(KeyEvent.KEYCODE_U, new TupleStringInt(Piano.white[7],
+				SPPlayer.keyc4));
+		note2Key.put(KeyEvent.KEYCODE_I, new TupleStringInt(Piano.white[8],
+				SPPlayer.keyd4));
+		note2Key.put(KeyEvent.KEYCODE_O, new TupleStringInt(Piano.white[9],
+				SPPlayer.keye4));
+		note2Key.put(KeyEvent.KEYCODE_P, new TupleStringInt(Piano.white[10],
+				SPPlayer.keyf4));
+		note2Key.put(KeyEvent.KEYCODE_LEFT_BRACKET, new TupleStringInt(
+				Piano.white[11], SPPlayer.keyg4));
+		note2Key.put(KeyEvent.KEYCODE_RIGHT_BRACKET, new TupleStringInt(
+				Piano.white[12], SPPlayer.keya4));
+		note2Key.put(KeyEvent.KEYCODE_BACKSLASH, new TupleStringInt(
+				Piano.white[13], SPPlayer.keyb4));
+
+		// black keys
+		note2Key.put(KeyEvent.KEYCODE_1, new TupleStringInt(Piano.black[0], SPPlayer.keyc3s));
+		note2Key.put(KeyEvent.KEYCODE_2, new TupleStringInt(Piano.black[1], SPPlayer.keyd3s));
+		note2Key.put(KeyEvent.KEYCODE_4, new TupleStringInt(Piano.black[2], SPPlayer.keyf3s));
+		note2Key.put(KeyEvent.KEYCODE_5, new TupleStringInt(Piano.black[3], SPPlayer.keyg3s));
+		note2Key.put(KeyEvent.KEYCODE_6, new TupleStringInt(Piano.black[4], SPPlayer.keya3s));
+		note2Key.put(KeyEvent.KEYCODE_8, new TupleStringInt(Piano.black[5], SPPlayer.keyc4s));
+		note2Key.put(KeyEvent.KEYCODE_9, new TupleStringInt(Piano.black[6], SPPlayer.keyd4s));
+		note2Key.put(KeyEvent.KEYCODE_MINUS, new TupleStringInt(Piano.black[7],
+				SPPlayer.keyf4s));
+		note2Key.put(KeyEvent.KEYCODE_EQUALS, new TupleStringInt(Piano.black[8],
+				SPPlayer.keyg4s));
+		note2Key.put(KeyEvent.KEYCODE_DEL, new TupleStringInt(Piano.black[9],
+				SPPlayer.keya4s));
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.i("key", "down: " + keyCode);
+		TupleStringInt result = null;
+		if ((result = note2Key.get(keyCode)) != null) {
+			Log.i("key", "valid result: " + result);
+
+			sp.playNote(result.getStr(), 1);
+			piano.shadeExclusive(result.getInt());
+			return true;
+		}
+		// play the sound based on the hashmap from keyCode to note
+
+		return false;
+	}
+
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		Log.i("key", "press: " + keyCode);
+		TupleStringInt result = null;
+		if ((result = note2Key.get(keyCode)) != null) {
+			Log.i("key", "valid result: " + result);
+
+			piano.unShade(result.getInt());
+			return true;
+		}
+		return false;
 	}
 
 	@Override

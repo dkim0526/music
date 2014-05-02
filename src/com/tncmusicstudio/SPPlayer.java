@@ -37,14 +37,14 @@ public class SPPlayer {
 			f3S = 0, f3 = 0, g3S = 0, g3 = 0, c3 = 0;
 	private int[] soundID_Arr = { a4S, a4, b4, c4S, d4S, d4, e4, f4S, f4, g4S,
 			g4, c4, a3S, a3, b3, c3S, d3S, d3, e3, f3S, f3, g3S, g3, c3 };
-	private String keya4s = "keya4s", keya4 = "keya4", keyb4 = "keyb4";
-	private String keyc4s = "keyc4s", keyd4s = "keyd4s", keyd4 = "keyd4";
-	private String keye4 = "keye4", keyf4s = "keyf4s", keyf4 = "keyf4";
-	private String keyg4s = "keyg4s", keyg4 = "keyg4", keyc4 = "keyc4";
-	private String keya3s = "keya3s", keya3 = "keya3", keyb3 = "keyb3";
-	private String keyc3s = "keyc3s", keyd3s = "keyd3s", keyd3 = "keyd3";
-	private String keye3 = "keye3", keyf3s = "keyf3s", keyf3 = "keyf3";
-	private String keyg3s = "keyg3s", keyg3 = "keyg3", keyc3 = "keyc3";
+	public static String keya4s = "keya4s", keya4 = "keya4", keyb4 = "keyb4";
+	public static String keyc4s = "keyc4s", keyd4s = "keyd4s", keyd4 = "keyd4";
+	public static String keye4 = "keye4", keyf4s = "keyf4s", keyf4 = "keyf4";
+	public static String keyg4s = "keyg4s", keyg4 = "keyg4", keyc4 = "keyc4";
+	public static String keya3s = "keya3s", keya3 = "keya3", keyb3 = "keyb3";
+	public static String keyc3s = "keyc3s", keyd3s = "keyd3s", keyd3 = "keyd3";
+	public static String keye3 = "keye3", keyf3s = "keyf3s", keyf3 = "keyf3";
+	public static String keyg3s = "keyg3s", keyg3 = "keyg3", keyc3 = "keyc3";
 	private String[] keyArr = { keya4s, keya4, keyb4, keyc4s, keyd4s, keyd4,
 			keye4, keyf4s, keyf4, keyg4s, keyg4, keyc4, keya3s, keya3, keyb3,
 			keyc3s, keyd3s, keyd3, keye3, keyf3s, keyf3, keyg3s, keyg3, keyc3 };

@@ -26,13 +26,17 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import com.model.NotePlay;
 import com.model.RecNotes;
+import com.tncmusicstudio.MidiOptions;
+import com.tncmusicstudio.SPPlayer;
 
 /**
  * @class Piano
@@ -69,7 +73,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 	/* The colors for drawing black/gray lines */
 	private int gray1, gray2, gray3, shade1, shade2;
-
+	public final static int OUT_COLOR = Color.rgb(210, 205, 220);
 	private boolean useTwoColors;
 	/** If true, use two colors for highlighting */
 	/** The Midi notes for shading */
@@ -103,8 +107,8 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	ArrayList<Integer> xyPointer = new ArrayList<Integer>();
 	ArrayList<Integer> logTouch = new ArrayList<Integer>();
 
-	final int[] black = { 25, 27, 30, 32, 34, 37, 39, 42, 44, 46 };
-	final int[] white = { 24, 26, 28, 29, 31, 33, 35, 36, 38, 40, 41, 43, 45,
+	public static final int[] black = { 25, 27, 30, 32, 34, 37, 39, 42, 44, 46 };
+	public static final int[] white = { 24, 26, 28, 29, 31, 33, 35, 36, 38, 40, 41, 43, 45,
 			47 };
 	// // put some of these initializing in the ctors later
 	// HashMap<Integer, Integer> xy1 = new HashMap<Integer, Integer>();
@@ -127,10 +131,10 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void addToRec(RecNotes rn) {
-		if(myRec == null) {
+		if (myRec == null) {
 			System.err.println("myrec null");
 			return;
-		} else if (rn == null ) {
+		} else if (rn == null) {
 			System.err.println("rn null");
 			return;
 		}
@@ -139,7 +143,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void setMyRec(ArrayList<RecNotes> myRec) {
 		this.myRec = myRec;
-		
+
 		Log.i("Piano", "setRecording to playback " + (myRec != null));
 	}
 
@@ -164,10 +168,10 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		showNoteLetters = MidiOptions.NoteNameNone;
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
-		//soundPool  = new SPPlayer();
+		// soundPool = new SPPlayer();
 	}
 
-	//constructor to play audio only
+	// constructor to play audio only
 	public Piano(Context context, SPPlayer sp) {
 		super(context);
 
@@ -184,10 +188,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		showNoteLetters = MidiOptions.NoteNameNone;
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(this);
-		soundPool  = sp;
+		soundPool = sp;
 	}
-	
-	
+
 	public Piano(Context context, int[] valMargin, SPPlayer sp, boolean type) {
 		super(context);
 		xyPointer.add(0);
@@ -245,7 +248,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		// int margin = keywidth/2;
 		int margin = 0;
-		int border = keywidth / 2;
+		int border = 1;
 
 		Point result = new Point();
 		result.x = margin * 2 + border * 2 + keywidth * KeysPerOctave
@@ -661,6 +664,32 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		canvas.translate(-(octave * WhiteKeyWidth * KeysPerOctave), 0);
 	}
 
+	public void shadeExclusive(int notenumber) {
+		if (!surfaceReady || bufferBitmap == null) {
+			Log.e("Shade", "fail");
+			return;
+		}
+		SurfaceHolder holder = getHolder();
+		Canvas canvas = holder.lockCanvas();
+		if (canvas == null) {
+			Log.e("Shade", "fail2");
+			return;
+		}
+
+		bufferCanvas.translate(margin + BlackBorder, margin + BlackBorder);
+		
+			ShadeOneNote(bufferCanvas, notenumber, shade1);
+		bufferCanvas
+				.translate(-(margin + BlackBorder), -(margin + BlackBorder));
+		canvas.drawBitmap(bufferBitmap, 0, 0, paint);
+		DrawNoteLetters(canvas); // makes it slow
+		holder.unlockCanvasAndPost(canvas);
+	}
+
+	public Canvas getCanvas() {
+		return bufferCanvas;
+	}
+
 	/** TODO ?? */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -684,6 +713,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	public void toggleShade() {
 		tutUnShade = ((tutUnShade == true) ? false : true);
+		Toast.makeText(getContext(), "You have finished the tutorial",
+				Toast.LENGTH_SHORT).show();
+		TutorialMSActivity.setUnlock(true);
 	}
 
 	public int getNumBlinks() {
@@ -705,14 +737,14 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 							 * it takes to generate the notes into scheduler
 							 */
 
-/* a method solely for replaying the recorded stuff */
-	
+	/* a method solely for replaying the recorded stuff */
+
 	public void playBackAudioOnly(int speed) {
 		/* myrec arraylist */
-//		if (!surfaceReady || bufferBitmap == null) {
-//			Log.e("Shade", "fail");
-//			return;
-//		}
+		// if (!surfaceReady || bufferBitmap == null) {
+		// Log.e("Shade", "fail");
+		// return;
+		// }
 		Log.i("Piano", "about to play audio only");
 		time = new Timer();
 		Calendar mycal = Calendar.getInstance();
@@ -720,8 +752,8 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 		String start = "print myRec: [";
 		for (int i = 0; i < myRec.size(); i++) {
-			start += myRec.get(i).getNoteToPlay() + " : " + myRec.get(i).getCurrTime()
-					+ ", ";
+			start += myRec.get(i).getNoteToPlay() + " : "
+					+ myRec.get(i).getCurrTime() + ", ";
 		}
 		start += "]";
 		Log.i("recstart", start);
@@ -730,11 +762,12 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 			mycal = copy;
 			if (i == 0) {
-				mycal.add(Calendar.MILLISECOND,
-						(int) (myRec.get(i).getCurrTime() + offset));
+				mycal.add(Calendar.MILLISECOND, (int) (myRec.get(i)
+						.getCurrTime() + offset));
 			} else {
-				mycal.add(Calendar.MILLISECOND, (int) (myRec.get(i).getCurrTime()
-						+ offset - myRec.get(i - 1).getCurrTime()));
+				mycal.add(Calendar.MILLISECOND, (int) (myRec.get(i)
+						.getCurrTime() + offset - myRec.get(i - 1)
+						.getCurrTime()));
 			}
 			Log.i("recstart",
 					"going to play it at: "
@@ -746,47 +779,22 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
-//					SurfaceHolder holder = getHolder();
-//					Canvas canvas = holder.lockCanvas();
-//					if (canvas == null) {
-//						Log.e("recstart", "fail2");
-//						return;
-//					}
-//
-//					bufferCanvas.translate(margin + BlackBorder, margin
-//							+ BlackBorder);
-//					
-//					ShadeOneNote(bufferCanvas, myRec.get(index).getNoteshade(), Color.LTGRAY);
-//
-//					bufferCanvas.translate(-(margin + BlackBorder),
-//							-(margin + BlackBorder));
-//					canvas.drawBitmap(bufferBitmap, 0, 0, paint);
-//					DrawNoteLetters(canvas);
-//					holder.unlockCanvasAndPost(canvas);
-//					
-//					Log.i("recstart", "about to play note: "
-//							+ myRec.get(index).getNoteToPlay());
-					soundPool.playNote(myRec.get(index).getNoteToPlay(), 1);
-					
-//					time.schedule(new TimerTask() {
-//
-//						@Override
-//						public void run() {
-//							// TODO Auto-generated method stub
-//							Log.i("recstart", " unshading myrec");
-////							unShade(myRec.get(index).getNoteshade());
-//						}
-//						
-//					}, 100);
+					Log.i("recstart",
+							"going to play this note: "
+									+ myRec.get(index).getNoteToPlay());
+					if (!myRec.get(index).isBeat()) {
+						soundPool.playNote(myRec.get(index).getNoteToPlay(), 1);
+					} else {
+						playBeat(myRec.get(index).getBeat());
+					}
 				}
 
 			}, mycal.getTime());
 		}
 	}
-	
+
 	/* a method solely for replaying the recorded stuff */
-	
+
 	public void playBack(int speed) {
 		/* myrec arraylist */
 		if (!surfaceReady || bufferBitmap == null) {
@@ -821,6 +829,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 				@Override
 				public void run() {
+					if (index == (myRec.size() - 1)) {
+						TutorialMSActivity.setUnlock(true);
+					}
 					// TODO Auto-generated method stubx`
 					if (!myRec.get(index).isBeat()) {
 						SurfaceHolder holder = getHolder();
@@ -870,13 +881,41 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 
+	public void playSong(NotePlay[] notes, int speed) {
+		myRec = new ArrayList<RecNotes>();
+		String toPlaySound = "";
+		int lastTime = 0;
+		songArr = notes;
+		for (int i = 0; i < notes.length; i++) {
+			double note = songArr[i].getNote();
+			if (note % 1 == 0) {
+				noteToShade = white[(int) note]; // noteArr[curr].getNote()
+				Log.i("noteShade", "noteToShade white: " + noteToShade);
+			} else {
+				noteToShade = black[(int) Math.round(note) - 1];
+				Log.i("noteShade", "noteToShade black: " + noteToShade);
+			}
+			// ShadeOneNote(bufferCanvas, noteToShade, Color.LTGRAY);
+			toPlaySound = noteToShadetoPlayConverter(noteToShade, true);
+
+			if (i != 0)
+				lastTime += (500 * (double) (speed / 150.0))
+						* songArr[i - 1].getDuration();
+			else
+				lastTime += 500;
+			myRec.add(new RecNotes(lastTime, toPlaySound, noteToShade));
+
+		}
+		playBack(1);
+	}
+
 	/**
 	 * for the tutorial note to enter: Black {C#, D#, F#, G#, A#, C#, D#, F#,
 	 * G#, A#} White {C, D, E, F, G, A, B, C, D, E, F, G, A, B} encode as [# of
 	 * note][sharp # or N]
 	 */
 	// (NotePlay[] notes)
-	public void playSong(NotePlay[] notes, int speed) {
+	public void playSong2(NotePlay[] notes, int speed) {
 		if (!surfaceReady || bufferBitmap == null) {
 			Log.e("Shade", "fail");
 			return;
@@ -887,10 +926,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		songArr = notes;
 		blinkShade = 1; // 1=unshade
 		curr = 0;
-		/*
-		 * try { unShade(noteToShade); time.cancel(); } catch (Exception ex) {
-		 * Log.i("unshading", " error playsong"); }
-		 */
+
 		time = new Timer();
 		if (tutUnShade == false) {
 			unShade(noteToShade);
@@ -1179,7 +1215,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		return true;
 	}
 
-	private void unShade(Integer note) { // should pass in what it is
+	public void unShade(Integer note) { // should pass in what it is
 		if (!surfaceReady || bufferBitmap == null) {
 			Log.e("Shade", "fail");
 			return;
@@ -1193,8 +1229,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 		bufferCanvas.translate(margin + BlackBorder, margin + BlackBorder);
 		int color = -1;
-		int[] black = { 25, 27, 30, 32, 34, 37, 39, 42, 44, 46 };
-		int[] white = { 24, 26, 28, 29, 31, 33, 35, 36, 38, 40, 41, 43, 45, 47 };
+
 		int foundNote = -1;
 		for (int i = 0; i < white.length; i++) {
 			if (white[i] == note) {
@@ -1217,6 +1252,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 			ShadeOneNote(bufferCanvas, foundNote, color);
 		else
 			Log.e("Shade", "color is " + color);
+
 		bufferCanvas
 				.translate(-(margin + BlackBorder), -(margin + BlackBorder));
 		canvas.drawBitmap(bufferBitmap, 0, 0, paint);
@@ -1235,6 +1271,8 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 	 * @return -1 if return none and note if return something
 	 */
 	private int ShadeRandom(float x, float y, boolean moved) {
+		Calendar calendar = Calendar.getInstance();
+		long stime = calendar.getTimeInMillis();
 		String noteToPlay = "";
 		int color = gray1;
 		int halfwayPoint = (WhiteKeyWidth * 6 + (margin_val[0] + WhiteKeyWidth + BlackBorder));
@@ -1261,6 +1299,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 		// }
 		// ShadeOneNote(bufferCanvas, lastShaded, color);
 		// }
+		System.out.println("SHADERANDOM: (x,y) (" + x + " , " + y + ") "
+				+ " margin: " + margin + " blackborder: " + BlackBorder);
+
 		if (x < halfwayPoint) {
 			// if it's in C4
 			if (x < (margin_val[0] + WhiteKeyWidth + BlackBorder)) {
@@ -1431,9 +1472,11 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
 		}
+		long ftime1 = calendar.getTimeInMillis();
 
 		ShadeOneNote(bufferCanvas, lastShaded, shade1);
 
+		long ftime2 = calendar.getTimeInMillis();
 		// Log.e("coord", " THE COORD I WANT IS : " + (WhiteKeyWidth * 6 +
 		// (margin_val[0] + WhiteKeyWidth + BlackBorder)));
 		bufferCanvas
@@ -1503,8 +1546,16 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 							key, lastShaded));
 				}
 			}
+			long ftime3 = calendar.getTimeInMillis();
 
 			soundPool.playNote(key, 1);
+			long ftime4 = calendar.getTimeInMillis();
+			System.out.println("after trying to shade with if: "
+					+ (ftime1 - stime) + " after shadeonenote: "
+					+ (ftime2 - ftime1)
+					+ " after figuring out what note to play and record: "
+					+ (ftime3 - ftime2) + " after playing note: "
+					+ (ftime4 - ftime3));
 			return lastShaded;
 		}
 
@@ -1518,7 +1569,7 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 			startTime = Calendar.getInstance();
 		}
 	}
-	
+
 	public boolean getRecStart() {
 		return recStart;
 	}
@@ -1671,8 +1722,9 @@ public class Piano extends SurfaceView implements SurfaceHolder.Callback {
 
 	}
 
-	public static String[] beatArrss = { "beat1", "beat2", "beat3", "beat4", "beat5", "beat6",
-											"clap","snare", "oneshot3", "oneshot4", "oneshot5", "oneshot6" };
+	public static String[] beatArrss = { "beat1", "beat2", "beat3", "beat4",
+			"beat5", "beat6", "clap", "snare", "oneshot3", "oneshot4",
+			"oneshot5", "oneshot6" };
 
 	public void playBeat(int i) {
 		soundPool.playNote(beatArrss[i], 1);
