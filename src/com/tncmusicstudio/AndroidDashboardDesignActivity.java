@@ -5,7 +5,7 @@ import com.actionbarsherlock.view.Menu;
 
 import android.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.tncmusicstudio.R;
+
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -72,6 +72,11 @@ public class AndroidDashboardDesignActivity extends SherlockActivity {
 		}
 		else if(item.getItemId()==R.id.pianointro_icon){
 			Intent i = new Intent(this,PlayAroundActivity.class);
+			startActivity(i);
+			return true;
+		}
+		else if(item.getItemId()==R.id.mic_icon){
+			Intent i = new Intent(this,Mic_Test.class);
 			startActivity(i);
 			return true;
 		}
