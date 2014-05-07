@@ -39,6 +39,7 @@ public class SoonToBe extends SherlockListActivity {
 	private boolean renam = false;
 	private SPPlayer sp;
 	private MySimpleArrayAdapter listadapter;
+	private String origin = "_PIANO";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +146,7 @@ public class SoonToBe extends SherlockListActivity {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							String newnam = input.getText().toString();
+							String newnam = input.getText().toString() + origin;
 							rm.renamRec(newnam, elem);
 							renam = true;
 							if (renam) {

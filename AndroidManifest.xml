@@ -65,7 +65,7 @@
             android:label="@string/title_activity_soon_to_be"
             android:screenOrientation="landscape" >
         </activity>
-
+		
     </application>
 
 </manifest>

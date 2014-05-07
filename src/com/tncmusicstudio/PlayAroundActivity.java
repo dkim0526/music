@@ -70,6 +70,8 @@ public class PlayAroundActivity extends SherlockActivity {
 	/* for note playing */
 	private SPPlayer sp;
 	private boolean loaded = false;
+
+	private String origin = "_PIANO";
 	/* To be able to collapse items with beats */
 	Menu mymenu;
 
@@ -875,7 +877,7 @@ public class PlayAroundActivity extends SherlockActivity {
 		Log.i("option", "saving rec option");
 		Toast.makeText(this, "saving your recording", Toast.LENGTH_SHORT)
 				.show();
-		rm.saveRec(piano.getMyRec());
+		rm.saveRec(piano.getMyRec(), origin);
 		return true;
 	}
 

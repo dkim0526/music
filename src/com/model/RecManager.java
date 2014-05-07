@@ -106,12 +106,12 @@ public class RecManager {
 		}
 	}
 	
-	public void saveRec(ArrayList<RecNotes> newrec) {
+	public void saveRec(ArrayList<RecNotes> newrec, String origin) {
 		HashMap<String, ArrayList<RecNotes>> database = new HashMap<String, ArrayList<RecNotes>>();
 		try {
 			Log.e("serialize", "starting serializing");
 			database = getSerialized(filename);
-            String dfnam = "MyJam " + (database.size() + 1); 
+            String dfnam = "MyJam " + (database.size() + 1) + origin; 
 			/*if (rn == null) {
 				Log.i("option", "rn was null, making new");
 				rn = new HashMap<String, ArrayList<RecNotes>>();
@@ -125,7 +125,7 @@ public class RecManager {
 //				database = new HashMap<String, ArrayList<RecNotes>>();
 //			}
 			database = new HashMap<String, ArrayList<RecNotes>>();
-			String dfnam = "MyJam " + (database.size() + 1);
+			String dfnam = "MyJam " + (database.size() + 1) + origin;
 			database.put(dfnam, newrec);
 			try {
 				setSerialized(filename, database);
