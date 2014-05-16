@@ -37,7 +37,7 @@ public class SoonToBe extends SherlockListActivity {
 	private String selectedValue;
 	private String[] recKeys;
 	private HashMap<String, ArrayList<RecNotes>> db;
-	private Piano piano;
+	//private Piano piano;
 	private String elem;
 	private boolean renam = false;
 	private static SPPlayer sp;

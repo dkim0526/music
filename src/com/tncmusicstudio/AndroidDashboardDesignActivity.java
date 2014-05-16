@@ -75,11 +75,11 @@ public class AndroidDashboardDesignActivity extends SherlockActivity {
 			startActivity(i);
 			return true;
 		}
-//		else if(item.getItemId()==R.id.mic_icon){
-//			Intent i = new Intent(this,Mic_Test.class);
-//			startActivity(i);
-//			return true;
-//		}
+		else if(item.getItemId()==R.id.mic_icon){
+			Intent i = new Intent(this,Mic_Test.class);
+			startActivity(i);
+			return true;
+		}
 		return false;
 		
 	}
