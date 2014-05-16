@@ -1,5 +1,7 @@
 package com.tncmusicstudio;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -21,13 +24,16 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.model.RecNotes;
+import com.model.RecManager;
 import com.tncmusicstudio.R;
 
 public class Beats_Activity extends SherlockActivity {
 	boolean check = true;
-	boolean saving = true;
+	//boolean saving = true;
+	
 	Menu mymenu;
-	private static SPPlayer sp;
+	private SPPlayer sp;
 
 	Button beat1, beat2, beat3, beat4, beat5, beat6;
 	Button[] mybeats = {};
@@ -38,9 +44,19 @@ public class Beats_Activity extends SherlockActivity {
 	SharedPreferences.Editor edit;
 	public static final String DEFAULT_STRING_ARRAY = "000000000000";
 	static String myset = "";
-
+	
+	//Recording vars
+	boolean recStart = false;
+	private ArrayList<RecNotes> myRec;
+	private Calendar startTime;
+	//private int key;
+	//saving
+	private RecManager rm;
+	private String origin = "_BEATS";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		rm = new RecManager(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_beats_);
 		setTitle("One Shots");
@@ -51,12 +67,12 @@ public class Beats_Activity extends SherlockActivity {
 		settings = getSharedPreferences(PREFS, 0);
 		edit = settings.edit();
 		/* then it's been set up, otherwise set it up */
-		myset = settings.getString(beat_key, DEFAULT_STRING_ARRAY);
-		if (myset.length() != 12) {
-			myset = DEFAULT_STRING_ARRAY;
-			edit.putString(beat_key, DEFAULT_STRING_ARRAY);
-			edit.commit();
-		}
+		//myset = settings.getString(beat_key, DEFAULT_STRING_ARRAY);
+//		if (myset.length() != 12) {
+//			myset = DEFAULT_STRING_ARRAY;
+//			edit.putString(beat_key, DEFAULT_STRING_ARRAY);
+//			edit.commit();
+//		}
 
 		/**
 		 * Creating all buttons instances
@@ -69,16 +85,10 @@ public class Beats_Activity extends SherlockActivity {
 		beat6 = (Button) findViewById(R.id.button6);
 
 		/* tag indicates that it's blue */
-		beat1.setTag(true);
-		beat2.setTag(true);
-		beat3.setTag(true);
-		beat4.setTag(true);
-		beat5.setTag(true);
-		beat6.setTag(true);
-
+		resetTags();
 		Button[] beatcopy = { beat1, beat2, beat3, beat4, beat5, beat6 };
 		mybeats = beatcopy;
-		setBeatColors();
+		//setBeatColors();
 
 		/*
 		 * For saving the beats- this is how it will work On action down, if
@@ -89,15 +99,27 @@ public class Beats_Activity extends SherlockActivity {
 		beat1.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				//boolean colorflag = beat1.getTag().equals(true);
+				//beat1.setTag(!(Boolean)beat1.getTag());
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
 					if (mymenu.getItem(1).getTitle().equals("One Shots")) {
 						if (!commits(beat1, 6))
 							return false;
-						playBeat(6);
-					} else {
+						//change the color of the tile
+							playBeat(6);
+							//key = 6;
+							if(recStart)
+								recording(6);
+					} 
+					//Beats
+					else {
 						if (!commits(beat1, 0))
 							return false;
-						playBeat(0);
+							playBeat(0);
+							//key = 0;
+							//myRec.add(new RecNotes)());
+							if(recStart)
+								recording(0);
 					}
 					/* if it's blue */
 					if (beat1.getTag().equals(true)) {
@@ -112,14 +134,14 @@ public class Beats_Activity extends SherlockActivity {
 
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
 					System.err.println("beat1 up: " + beat1.getTag()
-							+ " saving? : " + saving);
+							+ " saving? : " + "saving");
 
-					if (!saving) {
+//					if (!saving) {
 						beat1.setBackgroundResource(R.drawable.blue5);
 						beat1.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -132,11 +154,15 @@ public class Beats_Activity extends SherlockActivity {
 						if (!commits(beat2, 7))
 							return false;
 						playBeat(7);
+						if(recStart)
+							recording(7);
 
 					} else {
 						if (!commits(beat2, 1))
 							return false;
 						playBeat(1);
+						if(recStart)
+							recording(1);
 					}
 					/* if it's blue */
 
@@ -151,12 +177,12 @@ public class Beats_Activity extends SherlockActivity {
 					}
 
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (!saving) {
+//					if (!saving) {
 						beat2.setBackgroundResource(R.drawable.blue5);
 						beat2.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -170,11 +196,15 @@ public class Beats_Activity extends SherlockActivity {
 						if (!commits(beat3, 8))
 							return false;
 						playBeat(8);
+						if(recStart)
+							recording(8);
 
 					} else {
 						if (!commits(beat3, 2))
 							return false;
 						playBeat(2);
+						if(recStart)
+							recording(2);
 					}
 					/* if it's blue */
 
@@ -189,12 +219,12 @@ public class Beats_Activity extends SherlockActivity {
 					}
 
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (!saving) {
+//					if (!saving) {
 						beat3.setBackgroundResource(R.drawable.blue5);
 						beat3.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -208,11 +238,15 @@ public class Beats_Activity extends SherlockActivity {
 						if (!commits(beat4, 9))
 							return false;
 						playBeat(9);
+						if(recStart)
+							recording(9);
 
 					} else {
 						if (!commits(beat4, 3))
 							return false;
 						playBeat(3);
+						if(recStart)
+							recording(3);
 					}
 					/* if it's blue */
 					if (beat4.getTag().equals(true)) {
@@ -226,12 +260,12 @@ public class Beats_Activity extends SherlockActivity {
 					}
 
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (!saving) {
+//					if (!saving) {
 						beat4.setBackgroundResource(R.drawable.blue5);
 						beat4.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -245,11 +279,15 @@ public class Beats_Activity extends SherlockActivity {
 						if (!commits(beat5, 10))
 							return false;
 						playBeat(10);
+						if(recStart)
+							recording(10);
 
 					} else {
 						if (!commits(beat5, 4))
 							return false;
 						playBeat(4);
+						if(recStart)
+							recording(4);
 					}
 					/* if it's blue */
 					if (beat5.getTag().equals(true)) {
@@ -262,12 +300,12 @@ public class Beats_Activity extends SherlockActivity {
 						beat5.setTag(true);
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (!saving) {
+					//if (!saving) {
 						beat5.setBackgroundResource(R.drawable.blue5);
 						beat5.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -280,11 +318,15 @@ public class Beats_Activity extends SherlockActivity {
 						if (!commits(beat6, 11))
 							return false;
 						playBeat(11);
+						if(recStart)
+							recording(11);
 
 					} else {
 						if (!commits(beat6, 5))
 							return false;
 						playBeat(5);
+						if(recStart)
+							recording(5);
 					}
 					/* if it's blue */
 					if (beat6.getTag().equals(true)) {
@@ -297,12 +339,12 @@ public class Beats_Activity extends SherlockActivity {
 						beat6.setTag(true);
 					}
 				} else if (event.getAction() == MotionEvent.ACTION_UP) {
-					if (!saving) {
+					//if (!saving) {
 						beat6.setBackgroundResource(R.drawable.blue5);
 						beat6.setTag(true);
-					} else {
-
-					}
+//					} else {
+//
+//					}
 				}
 				return true;
 			}
@@ -311,47 +353,48 @@ public class Beats_Activity extends SherlockActivity {
 	}
 
 	public boolean commits(Button b, int num) {
-		if (saving) {
-			if (countNum() >= 4 && b.getTag().equals(true)) {
-				Toast.makeText(
-						this,
-						"You've already saved 4 beats, Unselect one to save another",
-						Toast.LENGTH_SHORT).show();
-				return false;
-			}
-			// if saving and it's blue then add it to the string
-			// and commit it
-			if (b.getTag().equals(true)) {
-				myset = setString(myset, num, true);
-				edit.putString(beat_key, myset);
-				edit.commit();
-			} else {
-				// if saving and it's orange then take the beat
-				// from the string and commit
-				myset = setString(myset, num, false);
-				edit.putString(beat_key, myset);
-				edit.commit();
-			}
-		}
+		//******buggy
+//		if (saving) {
+//			if (countNum() >= 4 && b.getTag().equals(true)) {
+//				Toast.makeText(
+//						this,
+//						"You've already saved 4 beats, Unselect one to save another",
+//						Toast.LENGTH_SHORT).show();
+//				return false;
+//			}
+//			// if saving and it's blue then add it to the string
+//			// and commit it
+//			if (b.getTag().equals(true)) {
+//				myset = setString(myset, num, true);
+//				edit.putString(beat_key, myset);
+//				edit.commit();
+//			} else {
+//				// if saving and it's orange then take the beat
+//				// from the string and commit
+//				myset = setString(myset, num, false);
+//				edit.putString(beat_key, myset);
+//				edit.commit();
+//			}
+//		}
 		return true;
 	}
 
 	public static int countNum() {
 		int num = 0;
-		for (int i = 0; i < myset.length(); i++) {
-			if (myset.charAt(i) == '1')
-				num++;
-		}
+//		for (int i = 0; i < myset.length(); i++) {
+//			if (myset.charAt(i) == '1')
+//				num++;
+//		}
 		return num;
 	}
 
 	public String setString(String str, int index, boolean set) {
-		char[] myArr = str.toCharArray();
-		myArr[index] = (set) ? '1' : '0';
+//		char[] myArr = str.toCharArray();
+//		myArr[index] = (set) ? '1' : '0';
 		String acc = "";
-		for (int i = 0; i < myArr.length; i++) {
-			acc += myArr[i];
-		}
+//		for (int i = 0; i < myArr.length; i++) {
+//			acc += myArr[i];
+//		}
 		// System.out.println("acc: " + acc + " set: " + set + " index: " +
 		// index);
 		return acc;
@@ -380,69 +423,79 @@ public class Beats_Activity extends SherlockActivity {
 			startActivity(i);
 			return true;
 		} else if (item.getItemId() == R.id.loop_icon) {
-			Toast.makeText(this, "The Loop has not been implemented yet",
+			Toast.makeText(this, "Recording",
 					Toast.LENGTH_SHORT).show();
+			startRec();
 			return true;
 		} else if (item.getItemId() == R.id.toggle) {
 
-			System.out.println("String: " + myset);
+			//System.out.println("String: " + myset);
 			if (check) {
 				check = false;
 				item.setTitle(R.string.toggleBeats);
 				setTitle("Beats");
-				if(!saving) setDefaultColors();
-				else setBeatColors();
+				//if(!saving) 
+					setDefaultColors();
+				//else setBeatColors();
 
 			} else {
 				check = true;
-				if(!saving) setDefaultColors();
-				else setBeatColors();
+				//if(!saving) 
+					
+				//else setBeatColors();
 				item.setTitle(R.string.toggleShots);
 				setTitle("One Shots");
+				setDefaultColors();
 
 			}
 			return true;
 		} else if (item.getItemId() == R.id.menu_sub) {
-			if (saving) {
+//			if (saving) {
 				// change to beats
 				item.setTitle(R.string.mode_play);
 				// item.getItemId(R.id.loop_icon).setVisible(false);
 				// ((Menu) item).getItem(1).setVisible(false);
 				Toast.makeText(this, "Start playing some beats!",
 						Toast.LENGTH_SHORT).show();
-				saving = false;
+//				saving = false;
 				setDefaultColors();
 
-			} else {
-				item.setTitle(R.string.mode_save);
-				Toast.makeText(this, "Start saving some beats",
-						Toast.LENGTH_SHORT).show();
-
-				saving = true;
-				setBeatColors();
-			}
+//			} else {
+//				item.setTitle(R.string.mode_save);
+//				Toast.makeText(this, "Start saving some beats",
+//						Toast.LENGTH_SHORT).show();
+//
+//				saving = true;
+//				setBeatColors();
+//			}
 			return true;
-		}
-
+		}else if (item.getItemId() == R.id.save_rec)
+		   return option_save();
+		 
+		else if (item.getItemId() == R.id.list_rec){
+			Intent goListRec = new Intent(this, SoonToBe.class);
+			startActivity(goListRec);
+		return true;
+		}	
 		else
 			return false;
 	}
 
 	private void setBeatColors() {
-		for (int i = 0; i < mybeats.length; i++) {
-			int index = i;
-			if (check)
-				index += 6;
-			System.out.println("index: " + index + "myset: " + myset);
-			if (myset.charAt(index) == '0') {
-				mybeats[i].setBackgroundResource(R.drawable.blue5);
-				mybeats[i].setTag(true);
-			}
-			else {
-				mybeats[i].setBackgroundResource(R.drawable.orange);
-				mybeats[i].setTag(false);
-			}
-		}
+//		for (int i = 0; i < mybeats.length; i++) {
+//			int index = i;
+//			if (check)
+//				index += 6;
+//			System.out.println("index: " + index + "myset: " + myset);
+//			if (myset.charAt(index) == '0') {
+//				mybeats[i].setBackgroundResource(R.drawable.blue5);
+//				mybeats[i].setTag(true);
+//			}
+//			else {
+//				mybeats[i].setBackgroundResource(R.drawable.orange);
+//				mybeats[i].setTag(false);
+//			}
+//		}
 	}
 
 	private void setDefaultColors() {
@@ -465,8 +518,76 @@ public class Beats_Activity extends SherlockActivity {
 			"beat5", "beat6", "clap", "snare", "oneshot3", "oneshot4",
 			"oneshot5", "oneshot6" };
 
-	public static void playBeat(int i) {
+	public  void playBeat(int i) {
 		sp.playNote(beatArrss[i], 1);
 	}
+	
+	public void resetTags(){
+		beat1.setTag(true);
+		beat2.setTag(true);
+		beat3.setTag(true);
+		beat4.setTag(true);
+		beat5.setTag(true);
+		beat6.setTag(true);
+	}
+	
+	//Beat Recording
+	
+	public void startRec() {
+		recStart = !recStart;
 
+		if (recStart) {
+			myRec = new ArrayList<RecNotes>(); /* clear the old one */
+			startTime = Calendar.getInstance();
+			Log.i("startRec","startTime " + startTime);
+		}
+	}
+	
+	public void recording(int key){
+		if (myRec.size() != 0) {
+			Log.i("recording","the recorded beat " + beatArrss[key]);
+			long st = ((Calendar.getInstance().getTimeInMillis() - startTime
+					.getTimeInMillis()) - myRec.get(myRec.size() - 1)
+					.getCurrTime());
+			/*Log.i("recstart",
+					"time diff from last: "
+							+ st
+							+ " diff? : "
+							+ key.equals(myRec.get(myRec.size() - 1)
+									.getNoteToPlay()));*/
+			if (/*!key.equals(myRec.get(myRec.size() - 1).getNoteToPlay())
+					||*/ (st > 100)) {
+				Log.i("recstart",
+						"going to start recording for note: "
+								+ key
+								+ " lastnote: "
+								+ myRec.get(myRec.size() - 1)
+										.getNoteToPlay() + " with st: "
+								+ st);
+				myRec.add(new RecNotes((Calendar.getInstance()
+						.getTimeInMillis() - startTime
+						.getTimeInMillis()), key));
+			}
+		} else {
+			Log.i("recstart", "going to start recording for note: "
+					+ key);
+			myRec.add(new RecNotes((Calendar.getInstance()
+					.getTimeInMillis() - startTime.getTimeInMillis()),
+					key));
+		}
+	}
+	
+	//saving
+	private boolean option_save() {
+		if (myRec.size() == 0) {
+			Toast.makeText(this, "no recording found", Toast.LENGTH_SHORT)
+					.show();
+			return true;
+		}
+		Log.i("option", "saving rec option");
+		Toast.makeText(this, "saving your recording", Toast.LENGTH_SHORT)
+				.show();
+		rm.saveRec(myRec, origin);
+		return true;
+	}
 }

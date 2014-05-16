@@ -44,6 +44,8 @@
     <string name="title_activity_test">testActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_tutorial_ms">TutorialMSActivity</string>
+    <string name="title_activity_Mic_Test">Microphone Activity</string>
+    
     <string name="playaround">Playing Around</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_test_anim">TestAnim</string>
@@ -87,12 +89,15 @@
     <string name="settings">Settings...show3</string>
     <string name="replay">Replay Recordings</string>
     <string name="title_activity_soon_to_be">SoonToBe</string>
+    <string name="title_activity_soon_to_beat">SoonToBeat</string>
     <string name="rename">Rename</string>
-
+    
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="trash_icon">Delete</string>
     <string name="savedbeats">Saved Beats</string>
     <string name="none">No Saved Beats</string>
+    <string name="mic_icon">Record</string>
+    <string name="save_icon">Save</string>
     
     
 

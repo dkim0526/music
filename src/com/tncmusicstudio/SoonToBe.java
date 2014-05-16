@@ -2,7 +2,10 @@ package com.tncmusicstudio;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockListActivity;
@@ -37,9 +40,13 @@ public class SoonToBe extends SherlockListActivity {
 	private Piano piano;
 	private String elem;
 	private boolean renam = false;
-	private SPPlayer sp;
+	private static SPPlayer sp;
 	private MySimpleArrayAdapter listadapter;
-	private String origin = "_PIANO";
+	static ArrayList<RecNotes> myRec;
+	static int offset = 0;
+	//private static SPPlayer soundPool;
+	static Timer time;
+	//private String origin = "_PIANO";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,7 @@ public class SoonToBe extends SherlockListActivity {
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		rm = new RecManager(this);
 		setUpSound();
-		piano = new Piano(this, sp);
+		//piano = new Piano(this, sp);
 		getDataBase();
 		Log.i("recordList", "recKeys size: " + recKeys.length);
 		listadapter = new MySimpleArrayAdapter(this, recKeys, true);
@@ -123,8 +130,8 @@ public class SoonToBe extends SherlockListActivity {
 			// do stuf
 			if (elem == null || elem.equals("No jams"))
 				return true;
-			piano.setMyRec(db.get(elem));
-			piano.playBackAudioOnly(1);
+			myRec = db.get(elem);
+			playBack(1);
 			// piano.playBack(1);
 			Log.i("recordList", "Play hit, playing" + elem);
 			return true;
@@ -146,7 +153,8 @@ public class SoonToBe extends SherlockListActivity {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							String newnam = input.getText().toString() + origin;
+							String[] tokens = elem.split("[_]");
+							String newnam = input.getText().toString() + "_" + tokens[1];
 							rm.renamRec(newnam, elem);
 							renam = true;
 							if (renam) {
@@ -199,6 +207,62 @@ public class SoonToBe extends SherlockListActivity {
 			return false;
 
 		}
+	}
+	public static void playBack(int speed) {
+
+		time = new Timer();
+		Calendar mycal = Calendar.getInstance();
+		Calendar copy = Calendar.getInstance();
+
+		Log.i("recstart", "size: " + myRec.size());
+
+		for (int i = 0; i < myRec.size(); i++) {
+
+			mycal = copy;
+			if (i == 0) {
+				mycal.add(Calendar.MILLISECOND, (int) (myRec.get(i)
+						.getCurrTime() + offset));
+			} else {
+				mycal.add(Calendar.MILLISECOND, (int) (myRec.get(i)
+						.getCurrTime() + offset - myRec.get(i - 1)
+						.getCurrTime()));
+			}
+			Log.i("recstart",
+					"going to play it at: "
+							+ (mycal.getTimeInMillis() - copy.getTimeInMillis())
+							+ " with the offset: "
+							+ (int) myRec.get(i).getCurrTime());
+			final int index = i;
+			time.schedule(new TimerTask() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stubx`
+					if (!myRec.get(index).isBeat()) {
+
+						Log.i("recstart",
+								"about to play note: "
+										+ myRec.get(index).getNoteToPlay());
+						sp.playNote(myRec.get(index).getNoteToPlay(), 1);
+
+					} else {
+						// is beat
+						playBeat(myRec.get(index).getBeat());
+						Log.i("recstart", "is a beat! playing beat: "
+								+ myRec.get(index).getBeat());
+					}
+				}
+
+			}, mycal.getTime());
+		}
+	}
+
+	public static String[] beatArrss = { "beat1", "beat2", "beat3", "beat4",
+		"beat5", "beat6", "clap", "snare", "oneshot3", "oneshot4",
+		"oneshot5", "oneshot6" };
+
+	public static void playBeat(int i) {
+		sp.playNote(beatArrss[i], 1);
 	}
 
 }
