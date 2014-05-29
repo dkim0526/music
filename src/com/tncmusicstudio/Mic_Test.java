@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.audiofx.EnvironmentalReverb;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -250,14 +251,17 @@ public class Mic_Test extends SherlockActivity {
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-		recorder.setAudioChannels(2);
+		// recorder.setAudioChannels(2);
 		recorder.setAudioEncodingBitRate(128);
-		recorder.setAudioSamplingRate(44100);
+		// recorder.setAudioSamplingRate(44100);
+		// System.out.println("value: " + MediaRecorder.getAudioSourceMax());
 		recorder.setOutputFile(mFileName);
 
 		try {
 			recorder.prepare();
+			// Thread.sleep(1000);
 		} catch (IOException e) {
+			System.out.println("failed in ioexcept");
 			Log.e(LOG_TAG, "prepare() failed");
 		}
 
@@ -265,7 +269,8 @@ public class Mic_Test extends SherlockActivity {
 		System.out.println("starting to record: " + (recorder == null)
 				+ " mrlist: " + (mrList[num] == null));
 		// TODO: make toast
-		Toast.makeText(getApplicationContext(), "start recording!", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), "start recording!",
+				Toast.LENGTH_SHORT).show();
 		recorder.start();
 	}
 
