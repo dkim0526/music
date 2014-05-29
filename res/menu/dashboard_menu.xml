@@ -25,12 +25,12 @@
         android:showAsAction="always"
         android:icon="@drawable/beats_icon"
         android:title="@string/beats_icon"/>
-        <!--  item
+        <item
         android:id="@+id/mic_icon"
         android:orderInCategory="5"
         android:showAsAction="always"
         android:icon="@drawable/mic_icon"
-        android:title="@string/mic_icon"/-->
+        android:title="@string/mic_icon"/>
         
         
         
