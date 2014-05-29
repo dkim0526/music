@@ -3,6 +3,7 @@ package com.tncmusicstudio;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashMap;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.model.ButtonMap;
 
 public class Mic_Test extends SherlockActivity {
 	boolean mStartRecording = true;
@@ -48,6 +51,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private static String mFileName = null;
 	Menu mymenu;
+	private HashMap<Integer, Button> loop2Key;
 
 	public Mic_Test() {
 		mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -73,7 +77,7 @@ public class Mic_Test extends SherlockActivity {
 
 		setTitle("Mic Check one two");
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		setContentView(R.layout.mictest_layout);
+		setContentView(R.layout.activity_mic);
 
 		/**
 		 * Creating all buttons instances
@@ -86,8 +90,12 @@ public class Mic_Test extends SherlockActivity {
 		beat6 = (Button) findViewById(R.id.rec6);
 
 		states = new int[6];
+		loop2Key = new HashMap<Integer, Button>();
 		/* tag indicates that it's blue */
 		// resetTags();
+		if (beat1 == null) {
+			System.out.println("beat 1 is null");
+		}
 		setRecListeners(beat1, 0);
 		setRecListeners(beat2, 1);
 		setRecListeners(beat3, 2);
@@ -95,9 +103,43 @@ public class Mic_Test extends SherlockActivity {
 		setRecListeners(beat5, 4);
 		setRecListeners(beat6, 5);
 
+		setUpKeyListeners();
+
 	}
 
-	void setRecListeners(Button b, final int num) {
+	private void setUpKeyListeners() {
+		Log.e("keylisten", "IM SETTING THIS UP NAOOOO!");
+		// first 3 beats
+		loop2Key.put(KeyEvent.KEYCODE_U, beat1);
+		loop2Key.put(KeyEvent.KEYCODE_I, beat2);
+		loop2Key.put(KeyEvent.KEYCODE_O, beat3);
+
+		// bottom 3 beats
+		loop2Key.put(KeyEvent.KEYCODE_J, beat4);
+		loop2Key.put(KeyEvent.KEYCODE_K, beat5);
+		loop2Key.put(KeyEvent.KEYCODE_L, beat6);
+	}
+
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.i("key", "down: " + keyCode);
+		Button result = null;
+		if ((result = loop2Key.get(keyCode)) != null) {
+			Log.i("key", "valid result: " + result);
+			result.performClick();
+			return true;
+		}
+		// play the sound based on the hashmap from keyCode to note
+
+		return false;
+	}
+
+	void setRecListeners(final Button b, final int num) {
+		if (b == null) {
+			System.out.println("asdfasdfasdfasdf");
+			return;
+		}
+		b.setBackgroundResource(R.drawable.default_btn);
+
 		b.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -111,9 +153,12 @@ public class Mic_Test extends SherlockActivity {
 								+ (mrList[num] == null));
 				switch (states[num]) {
 				case 0:
+					b.setBackgroundResource(R.drawable.neonorange);
 					startRecording(num);
 					break;
 				case 1:
+					b.setBackgroundResource(R.drawable.neonblue);
+
 					System.out.println("is it null ? : "
 							+ (mrList[num] == null));
 					if (mrList[num] != null) {
@@ -122,9 +167,13 @@ public class Mic_Test extends SherlockActivity {
 					}
 					break;
 				case 2:
+					b.setBackgroundResource(R.drawable.neongreen);
+
 					pausePlaying(num);
 					break;
 				default:
+					b.setBackgroundResource(R.drawable.neonblue);
+
 					resumePlaying(num);
 					states[num] -= 2;
 					break;
@@ -151,7 +200,7 @@ public class Mic_Test extends SherlockActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.activity_mic, menu);
 		getSupportActionBar().setBackgroundDrawable(
-				new ColorDrawable(Color.rgb(223, 160, 23)));
+				new ColorDrawable(Color.rgb(9, 59, 99)));
 		mymenu = menu;
 		return true;
 	}
@@ -254,7 +303,6 @@ public class Mic_Test extends SherlockActivity {
 		// recorder.setAudioChannels(2);
 		recorder.setAudioEncodingBitRate(128);
 		// recorder.setAudioSamplingRate(44100);
-		// System.out.println("value: " + MediaRecorder.getAudioSourceMax());
 		recorder.setOutputFile(mFileName);
 
 		try {
@@ -296,6 +344,12 @@ public class Mic_Test extends SherlockActivity {
 			mPlayer1.release();
 			mPlayer1 = null;
 		}
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		stopAll();
 	}
 
 	private String getFileName(int i) {
