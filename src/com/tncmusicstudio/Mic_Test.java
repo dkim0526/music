@@ -235,7 +235,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private void resumePlaying(int num) {
 		MediaPlayer player = mpList[num];
-		player.seekTo(0);
+		// player.seekTo(0);
 		player.start();
 	}
 
@@ -254,7 +254,6 @@ public class Mic_Test extends SherlockActivity {
 		recorder.setAudioEncodingBitRate(128);
 		recorder.setAudioSamplingRate(44100);
 		recorder.setOutputFile(mFileName);
-
 		try {
 			recorder.prepare();
 		} catch (IOException e) {
@@ -265,8 +264,11 @@ public class Mic_Test extends SherlockActivity {
 		System.out.println("starting to record: " + (recorder == null)
 				+ " mrlist: " + (mrList[num] == null));
 		// TODO: make toast
-		Toast.makeText(getApplicationContext(), "start recording!", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), "start recording!",
+				Toast.LENGTH_SHORT).show(); 
+		if(true) {
 		recorder.start();
+		}
 	}
 
 	private void stopRecording(int num) {
