@@ -72,7 +72,7 @@ public class Mic_Test extends SherlockActivity {
 
 		setTitle("Mic Check one two");
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		setContentView(R.layout.mictest_layout);
+		setContentView(R.layout.activity_mic);
 
 		/**
 		 * Creating all buttons instances
