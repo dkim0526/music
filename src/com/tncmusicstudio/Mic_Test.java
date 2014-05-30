@@ -200,7 +200,7 @@ public class Mic_Test extends SherlockActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.activity_mic, menu);
 		getSupportActionBar().setBackgroundDrawable(
-				new ColorDrawable(Color.rgb(9, 59, 99)));
+				new ColorDrawable(Color.rgb(223, 160, 23)));
 		mymenu = menu;
 		return true;
 	}
@@ -285,7 +285,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private void resumePlaying(int num) {
 		MediaPlayer player = mpList[num];
-		player.seekTo(0);
+		// player.seekTo(0);
 		player.start();
 	}
 
@@ -304,7 +304,6 @@ public class Mic_Test extends SherlockActivity {
 		recorder.setAudioEncodingBitRate(128);
 		// recorder.setAudioSamplingRate(44100);
 		recorder.setOutputFile(mFileName);
-
 		try {
 			recorder.prepare();
 			// Thread.sleep(1000);
