@@ -200,7 +200,7 @@ public class Mic_Test extends SherlockActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.activity_mic, menu);
 		getSupportActionBar().setBackgroundDrawable(
-				new ColorDrawable(Color.rgb(223, 160, 23)));
+				new ColorDrawable(Color.rgb(9, 59, 99)));
 		mymenu = menu;
 		return true;
 	}
@@ -291,6 +291,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private void stopPlaying(int num) {
 		MediaPlayer player = mpList[num];
+		player.stop();
 		player.release();
 		player = null;
 	}
@@ -348,9 +349,15 @@ public class Mic_Test extends SherlockActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+
 		stopAll();
 	}
+	@Override
+	public void onStop(){
+		super.onStop();
 
+		stopAll();
+	}
 	private String getFileName(int i) {
 		String str = Environment.getExternalStorageDirectory()
 				.getAbsolutePath();

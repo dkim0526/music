@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.Toast;
@@ -64,6 +66,10 @@ public class Beats_Activity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		rm = new RecManager(this);
 		super.onCreate(savedInstanceState);
+
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		setContentView(R.layout.activity_beats_);
 		setTitle("One Shots");
 		setUpSound();
