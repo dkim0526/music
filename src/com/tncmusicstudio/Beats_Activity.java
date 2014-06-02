@@ -342,6 +342,8 @@ public class Beats_Activity extends SherlockActivity {
 					Toast.LENGTH_SHORT).show();
 			// saving = false;
 			setDefaultColors();
+			option_save();
+
 
 			// } else {
 			// item.setTitle(R.string.mode_save);
