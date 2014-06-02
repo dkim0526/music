@@ -1,6 +1,7 @@
 package com.tncmusicstudio;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -8,16 +9,17 @@ import java.util.HashMap;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.media.audiofx.EnvironmentalReverb;
+import android.media.audiofx.PresetReverb;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,6 +29,11 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.model.ButtonMap;
+
+/*
+ * How to solidify player?
+ * 1) delete looping true, and make my own looping so that when I start, I set a timer to seek back to 0 at a certain duration
+ */
 
 public class Mic_Test extends SherlockActivity {
 	boolean mStartRecording = true;
@@ -51,7 +58,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private static String mFileName = null;
 	Menu mymenu;
-	private HashMap<Integer, Button> loop2Key;
+	private HashMap<Integer, ButtonMap> loop2Key;
 
 	public Mic_Test() {
 		mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -60,7 +67,7 @@ public class Mic_Test extends SherlockActivity {
 		fnf = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String filename) {
-				if (filename.contains(".3gp"))
+				if (filename.contains(FILE_NAME_EXT))
 					return true;
 				return false;
 			}
@@ -90,7 +97,7 @@ public class Mic_Test extends SherlockActivity {
 		beat6 = (Button) findViewById(R.id.rec6);
 
 		states = new int[6];
-		loop2Key = new HashMap<Integer, Button>();
+		loop2Key = new HashMap<Integer, ButtonMap>();
 		/* tag indicates that it's blue */
 		// resetTags();
 		if (beat1 == null) {
@@ -110,22 +117,36 @@ public class Mic_Test extends SherlockActivity {
 	private void setUpKeyListeners() {
 		Log.e("keylisten", "IM SETTING THIS UP NAOOOO!");
 		// first 3 beats
-		loop2Key.put(KeyEvent.KEYCODE_U, beat1);
-		loop2Key.put(KeyEvent.KEYCODE_I, beat2);
-		loop2Key.put(KeyEvent.KEYCODE_O, beat3);
+		loop2Key.put(KeyEvent.KEYCODE_U, new ButtonMap(beat1, false));
+		loop2Key.put(KeyEvent.KEYCODE_I, new ButtonMap(beat2, false));
+		loop2Key.put(KeyEvent.KEYCODE_O, new ButtonMap(beat3, false));
 
 		// bottom 3 beats
-		loop2Key.put(KeyEvent.KEYCODE_J, beat4);
-		loop2Key.put(KeyEvent.KEYCODE_K, beat5);
-		loop2Key.put(KeyEvent.KEYCODE_L, beat6);
+		loop2Key.put(KeyEvent.KEYCODE_J, new ButtonMap(beat4, false));
+		loop2Key.put(KeyEvent.KEYCODE_K, new ButtonMap(beat5, false));
+		loop2Key.put(KeyEvent.KEYCODE_L, new ButtonMap(beat6, false));
+
+		// long clicks
+		// first 3 beats
+		loop2Key.put(KeyEvent.KEYCODE_Q, new ButtonMap(beat1, true));
+		loop2Key.put(KeyEvent.KEYCODE_W, new ButtonMap(beat2, true));
+		loop2Key.put(KeyEvent.KEYCODE_E, new ButtonMap(beat3, true));
+
+		// bottom 3 beats
+		loop2Key.put(KeyEvent.KEYCODE_A, new ButtonMap(beat4, true));
+		loop2Key.put(KeyEvent.KEYCODE_S, new ButtonMap(beat5, true));
+		loop2Key.put(KeyEvent.KEYCODE_D, new ButtonMap(beat6, true));
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.i("key", "down: " + keyCode);
-		Button result = null;
+		ButtonMap result = null;
 		if ((result = loop2Key.get(keyCode)) != null) {
 			Log.i("key", "valid result: " + result);
-			result.performClick();
+			if (result.getClick()) {
+				result.getB().performLongClick();
+			} else
+				result.getB().performClick();
 			return true;
 		}
 		// play the sound based on the hashmap from keyCode to note
@@ -153,8 +174,7 @@ public class Mic_Test extends SherlockActivity {
 								+ (mrList[num] == null));
 				switch (states[num]) {
 				case 0:
-					b.setBackgroundResource(R.drawable.neonorange);
-					startRecording(num);
+					startRecording(b, num);
 					break;
 				case 1:
 					b.setBackgroundResource(R.drawable.neonblue);
@@ -188,7 +208,19 @@ public class Mic_Test extends SherlockActivity {
 		b.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
-				System.out.println("long click");
+				mFileName = getFileName(num);
+
+				System.out.println("long click- loading previous : " + num);
+				// set the state as 2, which is the paused neon green state
+				if (searchFiles(num)) {
+					states[num] = 2;
+					b.setBackgroundResource(R.drawable.neonblue);
+					startPlaying(num);
+				} else {
+					Toast.makeText(getApplicationContext(),
+							"sorry, no file name found preloaded",
+							Toast.LENGTH_SHORT).show();
+				}
 				// TODO Auto-generated method stub
 				return true;
 			}
@@ -238,6 +270,22 @@ public class Mic_Test extends SherlockActivity {
 			return false;
 	}
 
+	private boolean searchFiles(int num) {
+		File[] myfiles = Environment.getExternalStorageDirectory().listFiles(
+				fnf);
+		if (myfiles != null) {
+
+			for (File i : myfiles) {
+				System.out.println(" get FileName: " + getFileName(num)
+						+ " i: " + i.getName());
+				if (getFileName(num).contains(i.getName())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private void onRecord(boolean start) {
 		if (start) {
 			// startRecording();
@@ -264,15 +312,32 @@ public class Mic_Test extends SherlockActivity {
 
 	private void startPlaying(int num) {
 		MediaPlayer player = new MediaPlayer();
+		player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
 		System.out.println("starting to play: " + num + " with file: "
 				+ mFileName);
 
 		mpList[num] = player;
+
+		PresetReverb mReverb = new PresetReverb(0, 0);// <<<<<<<<<<<<<
+		mReverb.setPreset(PresetReverb.PRESET_SMALLROOM);
+		mReverb.setEnabled(true);
+
 		try {
+			// File file = new File(mFileName);
+			// FileInputStream inputStream = new FileInputStream(file);
+			// cutting off 200 b/c there's latency
 			player.setDataSource(mFileName);
+			player.attachAuxEffect(mReverb.getId());
+			player.setAuxEffectSendLevel(3.0f);
+			// player.setDataSource(inputStream.getFD(), 0,
+			// player.getDuration()- 200);
+			// inputStream.close();
+
 			player.prepare();
-			player.start();
 			player.setLooping(true);
+
+			player.start();
 		} catch (IOException e) {
 			Log.e(LOG_TAG, "prepare() failed");
 		}
@@ -285,7 +350,7 @@ public class Mic_Test extends SherlockActivity {
 
 	private void resumePlaying(int num) {
 		MediaPlayer player = mpList[num];
-		// player.seekTo(0);
+		player.seekTo(0);
 		player.start();
 	}
 
@@ -296,7 +361,7 @@ public class Mic_Test extends SherlockActivity {
 		player = null;
 	}
 
-	private void startRecording(int num) {
+	private void startRecording(Button b, int num) {
 		MediaRecorder recorder = new MediaRecorder();
 		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 		recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -307,19 +372,30 @@ public class Mic_Test extends SherlockActivity {
 		recorder.setOutputFile(mFileName);
 		try {
 			recorder.prepare();
-			// Thread.sleep(1000);
+			Thread.sleep(0);
 		} catch (IOException e) {
 			System.out.println("failed in ioexcept");
 			Log.e(LOG_TAG, "prepare() failed");
+		} catch (InterruptedException ex) {
+			Log.e(LOG_TAG, "interrupted sleep");
 		}
 
 		mrList[num] = recorder;
 		System.out.println("starting to record: " + (recorder == null)
 				+ " mrlist: " + (mrList[num] == null));
-		// TODO: make toast
-		Toast.makeText(getApplicationContext(), "start recording!",
-				Toast.LENGTH_SHORT).show();
+
 		recorder.start();
+
+		try {
+			Thread.sleep(400);
+
+			b.setBackgroundResource(R.drawable.neonorange);
+
+			Toast.makeText(getApplicationContext(), "start recording!",
+					Toast.LENGTH_SHORT).show();
+		} catch (InterruptedException ex) {
+
+		}
 	}
 
 	private void stopRecording(int num) {
@@ -352,12 +428,14 @@ public class Mic_Test extends SherlockActivity {
 
 		stopAll();
 	}
+
 	@Override
-	public void onStop(){
+	public void onStop() {
 		super.onStop();
 
 		stopAll();
 	}
+
 	private String getFileName(int i) {
 		String str = Environment.getExternalStorageDirectory()
 				.getAbsolutePath();

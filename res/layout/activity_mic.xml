@@ -16,21 +16,18 @@
             android:id="@+id/rec1"
             style="@style/ButtonB"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:title="@string/beat1" />
 
         <Button
             android:id="@+id/rec2"
             style="@style/ButtonB"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:title="@string/beat1" />
 
         <Button
             android:id="@+id/rec3"
             style="@style/ButtonB"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:title="@string/beat1" />
     </LinearLayout>
 
@@ -44,12 +41,10 @@
             android:id="@+id/rec4"
             style="@style/ButtonB"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             android:title="@string/beat1" />
 
         <Button
             android:id="@+id/rec5"
-            android:layout_height="200dp"
             style="@style/ButtonB"
             android:layout_width="match_parent"
             android:title="@string/beat1" />
@@ -57,7 +52,6 @@
         <Button
             android:id="@+id/rec6"
             style="@style/ButtonB"
-            android:layout_height="200dp"
             android:layout_width="match_parent"
             android:title="@string/beat1" />
     </LinearLayout>
