@@ -635,26 +635,26 @@ public class PlayAroundActivity extends SherlockActivity {
 	}
 
 	/** Show an error dialog with the given message */
-	private void showDialog(String message) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(message);
-		builder.setTitle("Piano Tutorial");
-		builder.setCancelable(false);
-		builder.setPositiveButton("Finished",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-
-					}
-				});
-		builder.setNegativeButton("Restart",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-
-					}
-				});
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
+//	private void showDialog(String message) {
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setMessage(message);
+//		builder.setTitle("Piano Tutorial");
+//		builder.setCancelable(false);
+//		builder.setPositiveButton("Finished",
+//				new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int id) {
+//
+//					}
+//				});
+//		builder.setNegativeButton("Restart",
+//				new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int id) {
+//
+//					}
+//				});
+//		AlertDialog alert = builder.create();
+//		alert.show();
+//	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -975,8 +975,8 @@ public class PlayAroundActivity extends SherlockActivity {
 			Log.e("noteFallTask", "CANCELED");
 		}
 
-		private void setRunning(boolean val) {
-			running = val;
-		}
+//		private void setRunning(boolean val) {
+//			running = val;
+//		}
 	}
 }
